@@ -1,0 +1,1 @@
+{"name":"/","type":"directory","children":[{"name":"docs","type":"directory","children":[{"name":"dentro_do_docs","type":"directory"},{"name":"reports","type":"directory","children":[{"name":"final.txt","type":"file"}]},{"name":"reports_backup","type":"directory","children":[{"name":"final.txt","type":"file"}]}]}]}
