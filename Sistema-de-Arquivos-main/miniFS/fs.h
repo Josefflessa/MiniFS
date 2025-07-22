@@ -1,20 +1,20 @@
-// miniFS/fs.h
-
 #ifndef FS_H
 #define FS_H
 
 #include <stddef.h> // Para size_t
+#include <wchar.h>  // Adicione esta linha para wchar_t, wcscpy, etc.
+#include <locale.h> // Adicione esta linha para setlocale, se necessário em outras partes
 
 // 1. Estruturas de Dados
 typedef enum { FILE_NODE, DIR_NODE } NodeType;
 
 typedef struct Node {
-    char name[100];
+    wchar_t name[100]; // <<--- MUDE ESTA LINHA DE 'char' PARA 'wchar_t'
     NodeType type;
     struct Node *parent;
     struct Node *child;    // Ponteiro para o primeiro filho
     struct Node *next;     // Ponteiro para o próximo irmão
-    char *content;         // Conteúdo, se for um arquivo
+    wchar_t *content;      // <<--- Esta já está correta como 'wchar_t *'
 } Node;
 
 // 2. Variáveis Globais (Estado do Sistema)

@@ -1,13 +1,15 @@
-// miniFS/utils.h
-
 #ifndef UTILS_H
 #define UTILS_H
 
-// Divide uma string de entrada em um array de tokens (palavras).
-// O chamador é responsável por liberar a memória com free_tokens.
-char** split_string(const char* input, int* count);
+#include <wchar.h> // Necessário para wchar_t
 
-// Libera a memória alocada por split_string.
+// Funções de string padrão (existentes)
+char** split_string(const char* input, int* count);
 void free_tokens(char** tokens);
+
+// Novas funções auxiliares para manipulação de wide chars
+wchar_t* wcs_dup(const wchar_t* s);
+wchar_t* char_to_wcs(const char* s_char);
+char* wcs_to_char(const wchar_t* s_wcs);
 
 #endif // UTILS_H
