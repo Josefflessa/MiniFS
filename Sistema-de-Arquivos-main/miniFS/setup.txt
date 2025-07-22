@@ -1,0 +1,27 @@
+mkdir docs
+cd docs
+mkdir importante
+mkdir jogos
+mkdir apps
+cd importante
+touch SistemasOperacionais.txt
+touch SistemasDeControle.txt
+cd ..
+cd jogos
+touch JogoDaCobrinha.txt
+touch CampoMinado.txt
+touch Minecraft.txt
+cd ..
+cd apps
+touch WhatsappWeb.txt
+touch Paint.txt
+touch Spotify.txt
+cd /
+mkdir docs/dentro_do_docs
+mkdir docs/reports
+echo docs/reports/final.txt Relatório final
+mkdir docs/reports_backup
+cp docs/reports/final.txt docs/reports_backup/final.txt
+export_tree_json fs_tree.json
+save minifs.dat
+exit
