@@ -24,6 +24,9 @@ void export_recursive(FILE *file, Node *node, int is_last);
 
 // --- Funções Auxiliares de Manipulação da Árvore ---
 
+// Encontra um nó em um diretório específico pelo nome
+// Começa verificando se o diretório é válido e, caso for,
+// começa a processar os filhos do diretório
 static Node* find_node_in_dir(Node* dir, const char* name) {
     if (!dir || dir->type != DIR_NODE) return NULL;
     Node* current = dir->child;
@@ -36,6 +39,7 @@ static Node* find_node_in_dir(Node* dir, const char* name) {
     return NULL;
 }
 
+// Encontra um nó pelo caminho completo
 static Node* find_node_by_path(const char *path) {
     if (path == NULL || strlen(path) == 0) return current_dir;
     if (strcmp(path, "/") == 0) return root;
@@ -60,6 +64,14 @@ static Node* find_node_by_path(const char *path) {
     return current_node;
 }
 
+// Obtém o diretório pai e o nome base de um caminho
+// Converte o caminho de char* para wchar_t* para manipulação
+// e retorna o diretório pai
+// O nome base é retornado no buffer out_basename   
+// Se o caminho não contiver barras, assume que é um nome no diretório atual
+// Se o caminho começar com uma barra, assume que é relativo à raiz 
+// Se o caminho contiver barras, divide o caminho e busca o diretório pai
+// e o nome base
 static Node* get_parent_dir_and_basename(const char* path, char* out_basename) {
     char* path_copy1 = strdup(path);
     char* path_copy2 = strdup(path);
@@ -83,6 +95,7 @@ static Node* get_parent_dir_and_basename(const char* path, char* out_basename) {
 
 // --- Inicialização e Destruição ---
 
+// Função de inicialização do sistema de arquivos (cria o nó raiz, como um diretório)
 void fs_init() {
     root = (Node*)malloc(sizeof(Node));
     if (!root) { perror("Failed to allocate root"); exit(1); }
@@ -95,6 +108,8 @@ void fs_init() {
     current_dir = root;
 }
 
+// Função de destruição do sistema de arquivos (libera memória alocada)
+// Libera recursivamente todos os nós, incluindo conteúdo de arquivos
 void fs_destroy(Node *node) {
     if (node == NULL) return;
     fs_destroy(node->child);
@@ -107,6 +122,8 @@ void fs_destroy(Node *node) {
 
 // --- Comandos do Sistema de Arquivos (API Pública) ---
 
+// Cria um novo diretório no caminho especificado
+// Verifica se o diretório pai existe e se é um diretório 
 void fs_mkdir(const char *path) {
     char name[100];
     Node *parent = get_parent_dir_and_basename(path, name);
@@ -128,6 +145,9 @@ void fs_mkdir(const char *path) {
     attach_node(parent, new_dir);
 }
 
+// Cria um novo arquivo no caminho especificado
+// Verifica se o diretório pai existe e se é um diretório
+// Também verifica se o arquivo já existe
 void fs_touch(const char *path) {
     char name[100];
     Node *parent = get_parent_dir_and_basename(path, name);
@@ -147,6 +167,8 @@ void fs_touch(const char *path) {
     attach_node(parent, new_file);
 }
 
+// Lista todos os arquivos e diretórios no caminho especificado
+// Se o caminho não existir, exibe uma mensagem de erro
 void fs_ls(const char *path) {
     Node* dir_to_list = find_node_by_path(path);
 
@@ -171,6 +193,7 @@ void fs_ls(const char *path) {
     }
 }
 
+// Muda para o diretório especificado
 void fs_cd(const char *path) {
     Node *target = find_node_by_path(path);
     if (target == NULL) {
@@ -210,6 +233,8 @@ void fs_pwd() {
     printf("%s\n", p);
 }
 
+// Apaga um arquivo ou diretório especificado
+// Verifica se o nó existe, se é o nó raiz ou se é um diretório não vazio
 void fs_rm(const char *path) {
     Node *target = find_node_by_path(path);
     if (target == NULL) {
@@ -230,6 +255,8 @@ void fs_rm(const char *path) {
     fs_destroy(target);
 }
 
+// Printa o conteúdo de um arquivo especificado
+// Verifica se o nó existe e se é um arquivo
 void fs_cat(const char *path) {
     Node *target = find_node_by_path(path);
     if (target == NULL) {
@@ -241,6 +268,9 @@ void fs_cat(const char *path) {
     }
 }
 
+// Escreve conteúdo em um arquivo especificado
+// Se o arquivo não existir, cria um novo arquivo
+// Se o arquivo já existir, substitui seu conteúdo
 void fs_echo(const char *path, const char *content) {
     char name[100];
     Node *parent = get_parent_dir_and_basename(path, name);
@@ -268,6 +298,8 @@ void fs_echo(const char *path, const char *content) {
 
 // --- Funções de Mover e Copiar (Lógica Principal) ---
 
+// Desanexa um nó de seu pai, removendo-o da lista de filhos
+// e limpando seus ponteiros pai e próximo
 static void detach_node(Node* node) {
     if (!node || !node->parent) return;
     Node* parent = node->parent;
@@ -284,6 +316,8 @@ static void detach_node(Node* node) {
     node->next = NULL;
 }
 
+// Anexa um nó filho a um pai, garantindo que o pai seja um diretório
+// e que o filho não tenha um próximo irmão por enquanto
 static void attach_node(Node* parent, Node* child) {
     if (!parent || parent->type != DIR_NODE || !child) return;
     child->parent = parent;
@@ -297,6 +331,9 @@ static void attach_node(Node* parent, Node* child) {
     }
 }
 
+// Move um nó de um caminho para outro
+// Verifica se o nó de origem existe, se o destino é válido e se não há
+// conflitos de nome
 void fs_mv(const char *source_path, const char *dest_path) {
     Node *source_node = find_node_by_path(source_path);
     if (!source_node || source_node == root) {
@@ -329,6 +366,8 @@ void fs_mv(const char *source_path, const char *dest_path) {
     attach_node(dest_parent, source_node);
 }
 
+// Copia um nó recursivamente, incluindo seus filhos (se for diretório)
+// Cria um novo nó com o mesmo nome e tipo, e copia o conteúdo se for um arquivo
 static Node* copy_node_recursive(Node* source, Node* new_parent) {
     if (!source) return NULL;
     
@@ -388,6 +427,8 @@ void fs_cp(const char *source_path, const char *dest_path) {
 
 // --- Funções de Serialização (Save/Load) e Exportação ---
 
+// Salva um nó recursivamente em um arquivo binário
+// Inclui o tipo do nó, nome, conteúdo (se for arquivo) e filhos 
 void save_node_recursive(FILE *file, Node *node) {
     if (node == NULL) return;
 
@@ -413,6 +454,10 @@ void save_node_recursive(FILE *file, Node *node) {
     }
 }
 
+// Abre o arquivo minifs.dat, salvando toda a árvore de nós
+// Começa pela raiz e salva recursivamente todos os nós
+// através da função save_node_recursive
+// Fecha o arquivo após salvar
 void fs_save(const char* filepath) {
     FILE *file = fopen(filepath, "wb");
     if (!file) { perror("Error opening file for saving"); return; }
@@ -421,6 +466,8 @@ void fs_save(const char* filepath) {
     printf("File system saved to %s\n", filepath);
 }
 
+// Carrega um nó recursivamente de um arquivo binário
+// Lê o tipo do nó, nome, conteúdo (se for arquivo) e filhos
 Node* load_node_recursive(FILE *file, Node *parent) {
     NodeType type;
     if (fread(&type, sizeof(NodeType), 1, file) != 1) return NULL;
@@ -462,6 +509,8 @@ Node* load_node_recursive(FILE *file, Node *parent) {
     return new_node;
 }
 
+// Carrega o sistema de arquivos a partir de um arquivo binário
+// Abre o arquivo minifs.dat, carregando toda a árvore de nós
 void fs_load(const char* filepath) {
     FILE *file = fopen(filepath, "rb");
     if (!file) {
@@ -476,6 +525,8 @@ void fs_load(const char* filepath) {
     printf("File system loaded from %s\n", filepath);
 }
 
+// Escreve no arquivo JSON a estrutura da árvore de nós
+// Converte os nomes de nós de wchar_t para char* para JSON
 void export_recursive(FILE *file, Node *node, int is_last) {
     if (node == NULL) return;
     fprintf(file, "{");
@@ -495,6 +546,8 @@ void export_recursive(FILE *file, Node *node, int is_last) {
     if (!is_last) fprintf(file, ",");
 }
 
+// Exporta a árvore de nós para um arquivo JSON
+// Abre o arquivo em modo de escrita e chama a função recursiva para exportar
 void fs_export_tree_json(const char *filepath) {
     FILE *file = fopen(filepath, "w");
     if (!file) {
