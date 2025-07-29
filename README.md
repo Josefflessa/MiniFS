@@ -4,7 +4,7 @@
 ![alt text](https://img.shields.io/badge/Language-Python-orange.svg)
 
 
-MiniFS é um sistema de arquivos virtual implementado em C, meticulosamente projetado como uma ferramenta educacional para desvendar o funcionamento interno de sistemas de arquivos baseados em árvore, como os onipresentes em sistemas operacionais UNIX-like (Linux, macOS). Ele opera inteiramente na memória RAM, simulando a lógica de um sistema de arquivos real, mas inclui funcionalidades essenciais para a persistência de dados em disco e uma interface de linha de comando (shell) interativa para uma experiência de usuário completa.
+MiniFS é um sistema de arquivos virtual implementado em C, projetado como uma ferramenta educacional para desvendar o funcionamento interno de sistemas de arquivos baseados em árvore, como os onipresentes em sistemas operacionais UNIX-like (Linux, macOS). Ele opera inteiramente na memória RAM, simulando a lógica de um sistema de arquivos real, mas inclui funcionalidades essenciais para a persistência de dados em disco e uma interface de linha de comando (shell) interativa para uma experiência de usuário completa.
 Para complementar a experiência de aprendizado, o projeto inclui um script em Python que gera uma visualização gráfica da estrutura de diretórios diretamente no terminal, transformando a abstrata estrutura de dados em uma representação visual e intuitiva.
 
 ### 📜 Índice
@@ -38,7 +38,7 @@ Para complementar a experiência de aprendizado, o projeto inclui um script em P
 11. [Conclusão: Uma Ponte entre a Teoria e a Prática](#11-conclusão-uma-ponte-entre-a-teoria-e-a-prática)
 
 ### 1. Introdução: Desmistificando a Caixa Preta
-Para a maioria dos usuários e até mesmo muitos desenvolvedores, o sistema de arquivos é uma "caixa preta". Sabemos que podemos criar pastas, salvar arquivos e navegar por caminhos, mas os mecanismos internos que orquestram essas operações permanecem um mistério. O MiniFS foi criado com a missão de abrir essa caixa preta. Para estudantes de Engenharia de Software e Sistemas Operacionais, ele serve como um laboratório prático e interativo para explorar conceitos que são a base dos sistemas modernos:
+Para a maioria dos usuários e até mesmo muitos desenvolvedores, o sistema de arquivos é uma "caixa preta". Sabemos que podemos criar pastas, salvar arquivos e navegar por caminhos, mas os mecanismos internos que orquestram essas operações permanecem um mistério. O MiniFS foi criado com a missão de abrir essa caixa preta. Para estudantes de Sistemas Operacionais, ele serve como um laboratório prático e interativo para explorar conceitos que são a base dos sistemas modernos:
 *   **Estruturas de Dados em Árvore:** Como uma hierarquia de diretórios é representada eficientemente na memória.
 *   **Manipulação de Nós:** A lógica por trás da criação (`mkdir`, `touch`), exclusão (`rm`), e movimentação (`mv`) de arquivos e pastas.
 *   **Resolução de Caminhos (Path Resolution):** O algoritmo que traduz um caminho como `/home/user/doc` em uma série de ponteiros para nós na árvore.
