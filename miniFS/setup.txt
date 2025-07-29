@@ -5,23 +5,26 @@ mkdir jogos
 mkdir apps
 cd importante
 touch SistemasOperacionais
+echo conteudo do arquivo sobre SistemasOperacionais > SistemasOperacionais
 touch SistemasDeControle
+echo conteudo do arquivo sobre SistemasDeControle > SistemasDeControle
 cd ..
 cd jogos
 touch JogoDaCobrinha
+echo descricao do JogoDaCobrinha > JogoDaCobrinha
 touch CampoMinado
+echo descricao do CampoMinado > CampoMinado
 touch Minecraft
+echo descricao do Minecraft > Minecraft
 cd ..
 cd apps
 touch WhatsappWeb
+echo descricao do WhatsappWeb > WhatsappWeb
 touch Paint
+echo descricao do Paint > Paint 
 touch Spotify
+echo descricao do Spotify > Spotify
 cd /
 mkdir docs/dentro_do_docs
-mkdir docs/reports
-echo docs/reports/final.txt Relatório final
-mkdir docs/reports_backup
-cp docs/reports/final.txt docs/reports_backup/final.txt
-export_tree_json fs_tree.json
-save minifs.dat
+tree
 exit
