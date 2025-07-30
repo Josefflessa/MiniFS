@@ -182,12 +182,12 @@ Contudo, uma árvore de teste pode ser carregada a partir do código de `setup.t
 | :--- | :--- | :--- |
 | `mkdir` | `mkdir <caminho_dir>` | Cria um novo diretório no caminho especificado. Pode ser um caminho absoluto (ex: `/home/user`) ou relativo (ex: `docs`). |
 | `touch` | `touch <caminho_arq>` | Cria um novo arquivo vazio. Se o arquivo já existir, não faz nada (semelhante ao comportamento UNIX). |
-| `ls` | `ls [caminho]` | Lista o conteúdo do diretório. Se o caminho for omitido, lista o diretório atual. |
+| `ls` | `ls [caminho]` | Lista o conteúdo do diretório. Se o caminho for omitido, lista o diretório atual. Se o caminho for o de um arquivo, simplesmente printa seu nome (já que não é um diretório) |
 | `cd` | `cd <caminho_dir>` | Altera o diretório de trabalho atual. Suporta `.` (diretório atual) e `..` (diretório pai). |
 | `pwd` | `pwd` | Exibe o caminho completo (absoluto) do diretório de trabalho atual, da raiz até o nó atual. |
-| `rm` | `rm <caminho>` | Remove um arquivo ou um diretório vazio. Impede a remoção de diretórios não vazios para segurança. |
+| `rm` | `rm <caminho>` | Remove um arquivo ou um diretório vazio. Impede a remoção de diretórios não vazios ou do diretório raiz `/` para segurança. |
 | `cat` | `cat <caminho_arq>` | Exibe o conteúdo de um arquivo de texto no terminal. |
-| `echo` | `echo <conteudo> > <caminho_arq>` | Escreve ou sobrescreve o conteúdo de um arquivo. O conteúdo pode conter espaços se estiver entre aspas. |
+| `echo` | `echo <conteudo> > <caminho_arq>` | Escreve ou sobrescreve o conteúdo de um arquivo. O conteúdo pode conter espaços, mas não reconhece algarismos especiais (como 'ç' ou vogais acentuadas). |
 | `mv` | `mv <origem> <destino>` | Move ou renomeia um arquivo ou diretório. É uma operação de re-ponteiramento, muito eficiente. |
 | `cp` | `cp <origem> <destino>` | Copia um arquivo ou diretório. Para diretórios, a cópia é recursiva, criando uma duplicata completa da subárvore. |
 | `tree` | `tree` | Exporta a estrutura atual do sistema de arquivos para `fs_tree.json` e notifica o usuário para usar `visualize.py`. |
@@ -197,7 +197,7 @@ Contudo, uma árvore de teste pode ser carregada a partir do código de `setup.t
 Esta seção é um tutorial passo a passo que demonstra um ciclo de uso completo do MiniFS: compilação, criação de uma estrutura de diretórios e arquivos, manipulação desses itens, salvamento do estado e, finalmente, a visualização gráfica da árvore resultante.
 
 #### Passo 1: Compilação e Primeira Execução
-Primeiro, certifique-se de estar no diretório raiz do projeto, onde os arquivos `.c` estão localizados. Compile o programa usando o comando que já detalhamos:
+Primeiro, certifique-se de ter o compilador gcc baixado (ou qualquer outro que saibas usar) e estar no diretório raiz do projeto, onde os arquivos `.c` estão localizados. Compile o programa usando o comando que já detalhamos:
 ```bash
 # Este comando é executado no seu terminal (Bash, Zsh, etc.)
 gcc -o minifs main.c fs.c shell.c utils.c -I. -std=c99 -Wall
@@ -241,7 +241,7 @@ O comando `ls` mostra os diretórios e o arquivo que acabamos de criar.
 Agora, vamos manipular os arquivos que criamos.
 Adicione conteúdo ao `readme.txt` usando `echo` e verifique com `cat`:
 ```shell
-MiniFS:/home/user$ echo "Este eh um projeto de teste para o MiniFS." > readme.txt
+MiniFS:/home/user$ echo Este eh um projeto de teste para o MiniFS. > readme.txt
 MiniFS:/home/user$ cat readme.txt
 Este eh um projeto de teste para o MiniFS.
 ```
@@ -326,6 +326,12 @@ O script lerá `fs_tree.json` e imprimirá uma bela representação colorida da 
         └── 📁 projects
 ```
 Este guia prático demonstrou o fluxo de trabalho completo do MiniFS, ilustrando como os conceitos teóricos de manipulação da árvore, persistência e visualização se unem para criar uma experiência de sistema de arquivos funcional e compreensível.
+
+Se você quiser uma visualização mais rápida e estruturada da criação de uma árvore, podes utilizar o modelo de árvore criado pelo arquivo `setup.txt` através do seguinte comando no terminal (antes de abrir o ./minifs):
+```shell
+Get-Content setup.txt | .\miniFS.exe
+```
+Com esse comando, toda a estrutura de `setup.txt` será montada, já havendo sido utilizados os comandos `tree` e `exit` nela, bastando a você apenas executar o comando com python para visualizar a árvore (ou executar o miniFS e verificar você mesmo os diretórios e arquivos com os comandos ensinados nesta seção). Teste você mesmo e veja a estrutura formada! :)
 
 ### 8. Comparação Aprofundada com FAT (MS-DOS): Abstração vs. Realidade Física
 Para apreciar plenamente o design do MiniFS, é instrutivo compará-lo a um sistema de arquivos real como o FAT (File Allocation Table), que dominou a era do MS-DOS e ainda é usado hoje em pen drives e cartões SD.
