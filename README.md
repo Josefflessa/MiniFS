@@ -174,6 +174,7 @@ Após a compilação, um arquivo executável `minifs` será criado. Inicie o she
 ./minifs
 ```
 Na primeira vez, ele criará um sistema de arquivos vazio. Nas execuções subsequentes, ele carregará o estado salvo em `minifs.dat`.
+Contudo, uma árvore de teste pode ser carregada a partir do código de `setup.txt`, um arquivo que pode ser executado juntamente ao `./minifs` a fim de criar uma árvore inteira como exemplo para estudos. Mais detalhes sobre o uso serão descritos abaixo!
 
 #### Guia de Comandos Completo
 
